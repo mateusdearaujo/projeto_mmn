@@ -1,7 +1,7 @@
 <?php
 session_start();
-
 require "config.php";
+require "funcoes.php";
 
 if(empty($_SESSION['mmnlogin'])) {
    header("Location: login.php");
@@ -22,6 +22,8 @@ if($sql->rowCount() > 0) {
     exit;
 }
 
+$lista = listar($id, $limite);
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -40,10 +42,14 @@ if($sql->rowCount() > 0) {
         <h1>Sistema de Marketing Multinível</h1>
         <span>Usuário conectado: <?php echo $nome; ?></span>
     </div>
+    <div>
+        <h2>Lista de usuários cadastrados</h2>
+        <?php exibir($lista); ?>
+    </div>
     <div id="btns">
         <a class="btn btn-primary" href="cadastro.php">Cadastrar novo usuário</a>
         <a class="btn btn-primary" href="sair.php">Sair</a>
-    </div
+    </div>
 </div>
 </main>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OG pamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
