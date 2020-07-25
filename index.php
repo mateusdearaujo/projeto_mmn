@@ -10,13 +10,16 @@ if(empty($_SESSION['mmnlogin'])) {
 
 $id = $_SESSION['mmnlogin'];
 
-$sql = $pdo->prepare("SELECT nome FROM usuarios WHERE id = :id");
+$sql = $pdo->prepare("SELECT usuarios.nome, patentes.nome as p_nome FROM usuarios
+LEFT JOIN patentes ON patentes.id = usuarios.patente
+WHERE usuarios.id = :id");
 $sql->bindValue(":id", $id);
 $sql->execute();
 
 if($sql->rowCount() > 0) {
     $sql = $sql->fetch();
     $nome = $sql['nome'];
+    $p_nome = $sql['p_nome'];
 } else {
     header("Location: login.php");
     exit;
@@ -40,7 +43,7 @@ $lista = listar($id, $limite);
 <div class="container home">
     <div id="conteudo">
         <h1>Sistema de Marketing Multinível</h1>
-        <span>Usuário conectado: <?php echo $nome; ?></span>
+        <span>Usuário conectado: <?php echo $nome." (".utf8_encode($p_nome).")" ?></span>
     </div>
     <div>
         <h2>Lista de usuários cadastrados</h2>
