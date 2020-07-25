@@ -15,15 +15,11 @@ if(!empty($_POST['email']) && !empty($_POST['senha'])) {
         $sql = $sql->fetch();
 
         $_SESSION['mmnlogin'] = $sql['id'];
+        $_SESSION['erro'] = "";
 
         header("Location: index.php");
-    } else {
-        $erro = "E-mail e/ou senha inválidos";
     }
-} else {
-    $erro = "";
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -50,11 +46,6 @@ if(!empty($_POST['email']) && !empty($_POST['senha'])) {
                 <label for="senha">Digite sua senha</label>
                 <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
             </div>
-            <?php if($erro != ""): ?>
-                <div class="alert alert-danger">
-                    <?php echo $erro; ?>
-                </div>
-            <?php endif; ?>
             <button type="submit" class="btn btn-primary">Entrar</button>
         </form>
     </div>
