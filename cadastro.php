@@ -3,36 +3,39 @@ session_start();
 require "config.php";
 
 $campos = array("nome", "email", "senha");
-$erro = "";
+$erro = $_SESSION['erro'];
 
-if($_POST){
-    foreach ($campos as $campo) {
-        if (empty($_POST[$campo])) {
-            $erro = "Favor preencher o formulário corretamente!";
+if($_POST) {
+    foreach($campos as $campo) {
+        if(empty($_POST[$campo])) {
+            $_SESSION['erro'] = "Favor preencher os dados corretamente";
+            header("Refresh: 0");
+            exit;
         } else {
             $nome = addslashes($_POST['nome']);
             $email = addslashes($_POST['email']);
             $senha = md5(addslashes($_POST['senha']));
             $id_pai = $_SESSION['mmnlogin'];
-
-            $sql = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
-            $sql->bindValue(":email", $email);
-            $sql->execute();
-
-            if($sql->rowCount() == 0) {
-                $sql = $pdo->prepare("INSERT INTO usuarios SET nome = :nome, email = :email, 
-                senha = :senha, id_pai = :id_pai");
-                $sql->bindValue(":nome", $nome);
-                $sql->bindValue(":email", $email);
-                $sql->bindValue(":senha", $senha);
-                $sql->bindValue(":id_pai", $id_pai);
-                $sql->execute();
-
-                header("Location: index.php");
-            } else {
-                $erro = "Este e-mail já está sendo utilizado.";
-            }
         }
+    }
+
+    $sql = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
+    $sql->bindValue(":email", $email);
+    $sql->execute();
+
+    if($sql->rowCount() == 0) {
+        $sql = $pdo->prepare("INSERT INTO usuarios SET nome = :nome, email = :email, 
+    senha = :senha, id_pai = :id_pai");
+        $sql->bindValue(":nome", $nome);
+        $sql->bindValue(":email", $email);
+        $sql->bindValue(":senha", $senha);
+        $sql->bindValue(":id_pai", $id_pai);
+        $sql->execute();
+
+        $_SESSION['erro'] = '';
+        header("Location: index.php");
+    } else {
+        $erro = "Este e-mail já está sendo utilizado.";
     }
 }
 ?>
@@ -64,7 +67,7 @@ if($_POST){
                     <label for="senha">Digite a senha</label>
                     <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
                 </div>
-                <?php if($erro != ""): ?>
+                <?php if(!empty($erro)): ?>
                     <div class="alert alert-danger">
                         <?php echo $erro; ?>
                     </div>
