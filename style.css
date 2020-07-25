@@ -24,3 +24,6 @@ body {
 	display: flex;
 	justify-content: space-between;
 }
+.home #conteudo {
+	margin-bottom: 30px;
+}
